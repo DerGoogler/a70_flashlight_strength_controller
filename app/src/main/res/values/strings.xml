@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">Flashlight Strength</string>
+    <string name="app_name">Phh Flashlight</string>
+    <string name="flash_strength_count">Flash strength: %s</string>
+    <string name="flashlight_state">Flash %s</string>
+    <string name="quit">Quit</string>
 </resources>

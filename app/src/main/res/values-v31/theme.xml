@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<style name="Theme.Flash.Light" parent="Theme.Material3.DynamicColors.Light">
+    <item name="android:statusBarColor">@color/status_bar_color</item>
+    <item name="colorBackgroundFloating">@color/system_accent2_200</item>
+    <item name="android:windowBackground">@color/system_accent2_100</item>
+</style>
+
+<style name="Theme.Flash.Transparent.Light" parent="Theme.Flash.Light" />
+
+<style name="Theme.Flash.Dark" parent="Theme.Material3.DynamicColors.Dark">
+    <item name="android:statusBarColor">@color/status_bar_color</item>
+    <item name="colorBackgroundFloating">@color/system_accent2_800</item>
+    <item name="android:windowBackground">@color/system_accent2_900</item>
+</style>
+
+<!-- Base application theme. -->
+<style name="Theme.Flash.Transparent.Dark" parent="Theme.Flash.Dark" />
+
+<style name="Theme.Flash" parent="Theme.Flash.Light" />
+</resources>
