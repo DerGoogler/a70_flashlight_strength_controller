@@ -2,13 +2,15 @@ package com.dergoogler.phh.flashlight;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.Toolbar;
 
 import com.dergoogler.phh.flashlight.controllers.FlashlightController;
+import com.dergoogler.phh.flashlight.util.HexColorValidator;
 import com.dergoogler.phh.flashlight.util.Link;
 import com.dergoogler.phh.flashlight.util.Shell;
 import com.dergoogler.phh.flashlight.util.SystemProperties;
@@ -17,6 +19,10 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Objects;
 
 public class MainActivity extends Activity {
     private MaterialButton turn_on_off_button;
@@ -25,6 +31,12 @@ public class MainActivity extends Activity {
     private MaterialToolbar action_bar;
     private FlashlightController fc;
     private Link link;
+    private TextInputEditText fingerprint_color_input;
+    private TextInputLayout fingerprint_color_input_layout;
+    private MaterialButton set_fingerprint_color;
+    private MaterialButton set_fingerprint_default_color;
+    private boolean isError = false;
+    private String SamsungFOD = SystemProperties.get("persist.sys.phh.fod.samsung");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +56,7 @@ public class MainActivity extends Activity {
             }
         }
 
-        // Elements
+        // Elements - Flashlight
         turn_on_off_button = findViewById(R.id.turn_on_off_button);
         flash_strength_slider = findViewById(R.id.flash_strength_slider);
         flash_strength_state = findViewById(R.id.flash_strength_state);
@@ -101,7 +113,6 @@ public class MainActivity extends Activity {
             }
         });
 
-
         flash_strength_slider.addOnChangeListener((slider, value, fromUser) -> {
             String currentValue = String.valueOf(value);
             try {
@@ -113,6 +124,52 @@ public class MainActivity extends Activity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        });
+
+        // Fingerprint
+        // Elements - Fingerprint
+        fingerprint_color_input_layout = findViewById(R.id.fingerprint_color_input_layout);
+        fingerprint_color_input = findViewById(R.id.fingerprint_color_input);
+        set_fingerprint_color = findViewById(R.id.set_fingerprint_color);
+        set_fingerprint_default_color = findViewById(R.id.set_fingerprint_default_color);
+
+        String input = fingerprint_color_input_layout.getEditText().getText().toString();
+        String prefixText = Objects.requireNonNull(fingerprint_color_input_layout.getPrefixText()).toString();
+
+        if (input.equals("")) {
+            set_fingerprint_color.setEnabled(false);
+        }
+
+        fingerprint_color_input.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!HexColorValidator.validate(charSequence.toString())) {
+                    isError = true;
+                    fingerprint_color_input.setError(prefixText + charSequence + " is not valid");
+                } else {
+                    isError = false;
+                }
+                set_fingerprint_color.setEnabled(!isError);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        set_fingerprint_color.setOnClickListener(view -> {
+            if (SamsungFOD.equals("") || SamsungFOD.equals("false")) {
+                toast("'persist.sys.phh.fod.samsung' are not existing or is set to false");
+            } else {
+                SystemProperties.set("persist.sys.phh.fod_color", prefixText + input);
+                toast("Use " + prefixText + input + " from now");
             }
         });
     }
