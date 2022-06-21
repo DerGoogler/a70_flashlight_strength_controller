@@ -3,20 +3,32 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId 'com.dergoogler.phh.flashlight'
         minSdk 26
-        targetSdk 32
+        targetSdk 33
         versionCode 110
         versionName '1.1.0'
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
+            multiDexEnabled true
+        }
+        debug {
+            applicationIdSuffix '.debug'
+            debuggable true
+            jniDebuggable true
+            renderscriptDebuggable true
+            minifyEnabled false
+            multiDexEnabled false
         }
     }
 

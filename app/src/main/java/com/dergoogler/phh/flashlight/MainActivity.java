@@ -1,5 +1,8 @@
 package com.dergoogler.phh.flashlight;
 
+import static com.dergoogler.phh.flashlight.util.SuperUser.BINARY_PHH_GSI;
+import static com.dergoogler.phh.flashlight.util.SuperUser.BINARY_SU;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -28,19 +31,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        checkRoot();
         checkSystem();
 
         fc = new FlashlightController(this);
         link = new Link(this);
-
-        // Try getting root access
-        if (!SuperUser.rootAccess()) {
-            try {
-                SuperUser.exec("ls");
-            } catch (Exception e) {
-                toast(e.toString());
-            }
-        }
 
         // Elements - Flashlight
         turn_on_off_button = findViewById(R.id.turn_on_off_button);
@@ -89,9 +84,23 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void checkRoot() {
+        // Try getting root access
+        if (!SuperUser.checkBinary(BINARY_SU)) {
+            MaterialAlertDialogBuilder builder =
+                    new MaterialAlertDialogBuilder(this);
+            builder
+                    .setTitle("No Root")
+                    .setMessage("The app wasn't able to find your su binary")
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.quit, (x, y) -> finish());
+            builder.show();
+        }
+    }
+
     private void checkSystem() {
         // Checking if system is an phh gsi system
-        if (SystemProperties.get("persist.sys.phh.dynamic_superuser").equals("")) {
+        if (!SuperUser.checkBinary(BINARY_PHH_GSI)) {
             MaterialAlertDialogBuilder builder =
                     new MaterialAlertDialogBuilder(this);
             builder

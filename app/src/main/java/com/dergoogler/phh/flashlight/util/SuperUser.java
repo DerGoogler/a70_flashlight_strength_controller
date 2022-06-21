@@ -15,7 +15,9 @@ public class SuperUser {
     private static int currentRootState = -1;
 
     public static final String BINARY_SU = "su";
-    public static final String BUSYBOX_BINARY = "busybox";
+    public static final String BINARY_BUSYBOX = "busybox";
+    public static final String BINARY_PHH_GSI = "phh-ota";
+
 
     // These must end with a /
     private static final String[] PATHS = {
@@ -86,7 +88,7 @@ public class SuperUser {
         return res;
     }
 
-    private boolean checkBinary(String filename) {
+    public static boolean checkBinary(String filename) {
         for (String path : PATHS) {
             String completePath = path + filename;
             File f = new File(completePath);
