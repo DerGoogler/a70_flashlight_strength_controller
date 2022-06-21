@@ -9,17 +9,8 @@ android {
         applicationId 'com.dergoogler.phh.flashlight'
         minSdk 26
         targetSdk 32
-        versionCode 100
-        versionName '1.0.0'
-        externalNativeBuild {
-            cmake {
-                cppFlags ""
-                arguments "-DANDROID_STL=c++_shared"
-            }
-        }
-        ndk {
-            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
-        }
+        versionCode 110
+        versionName '1.1.0'
     }
 
     buildTypes {
@@ -29,24 +20,9 @@ android {
         }
     }
 
-    externalNativeBuild {
-        cmake {
-            path = file("src/main/cpp/CMakeLists.txt")
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    packagingOptions {
-        jniLibs {
-            keepDebugSymbols += ['*/armeabi/*.so', '*/armeabi-v7a/*.so', '*/arm64-v8a/*.so', '*/mips/*.so', '*/mips64/*.so', '*/x86/*.so', '*/x86_64/*.so']
-        }
-        resources {
-            excludes += ['META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES', 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 'META-INF/MANIFEST.MF', 'META-INF/NOTICE', 'META-INF/NOTICE.txt', 'META-INF/ASL2.0']
-        }
     }
 
     buildFeatures {
@@ -57,10 +33,7 @@ android {
 dependencies {
     implementation 'androidx.core:core:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0"
     implementation "androidx.browser:browser:1.4.0"
-    implementation "dev.rikka.rikkax.insets:insets:1.2.0"
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
-    implementation "com.github.topjohnwu.libsu:core:5.0.2"
 }

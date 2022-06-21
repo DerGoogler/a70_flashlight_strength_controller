@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.dergoogler.phh.flashlight.controllers.FlashlightController;
 import com.dergoogler.phh.flashlight.util.Link;
-import com.dergoogler.phh.flashlight.util.Shell;
+import com.dergoogler.phh.flashlight.util.SuperUser;
 import com.dergoogler.phh.flashlight.util.SystemProperties;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -34,9 +34,9 @@ public class MainActivity extends Activity {
         link = new Link(this);
 
         // Try getting root access
-        if (!Shell.rootAccess()) {
+        if (!SuperUser.rootAccess()) {
             try {
-                Shell.exec("ls");
+                SuperUser.exec("ls");
             } catch (Exception e) {
                 toast(e.toString());
             }

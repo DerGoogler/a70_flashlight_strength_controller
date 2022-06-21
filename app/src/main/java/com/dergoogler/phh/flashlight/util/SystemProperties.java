@@ -18,8 +18,8 @@ public class SystemProperties {
     public static String get(String key) {
         Process process = null;
         BufferedReader bufferedReader = null;
-        if (Shell.rootAccess()) {
-            String prop = Shell.resultOf("getprop " + key).trim();
+        if (SuperUser.rootAccess()) {
+            String prop = SuperUser.resultOf("getprop " + key).trim();
             if (prop.endsWith("\n"))
                 prop = prop.substring(0, prop.length() - 1).trim();
             return prop;
@@ -51,6 +51,6 @@ public class SystemProperties {
 
     @Keep
     public static void set(String prop, String key) {
-        Shell.exec("setprop " + prop + " " + key);
+        SuperUser.exec("setprop " + prop + " " + key);
     }
 }

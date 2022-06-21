@@ -1,4 +1,4 @@
-package com.dergoogler.phh.flashlight.Receivers;
+package com.dergoogler.phh.flashlight.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
