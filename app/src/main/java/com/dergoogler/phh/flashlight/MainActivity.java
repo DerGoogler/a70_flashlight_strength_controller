@@ -4,10 +4,15 @@ import static com.dergoogler.phh.flashlight.util.SuperUser.BINARY_PHH_GSI;
 import static com.dergoogler.phh.flashlight.util.SuperUser.BINARY_SU;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.dergoogler.phh.flashlight.controllers.FlashlightController;
 import com.dergoogler.phh.flashlight.util.Link;
@@ -18,14 +23,17 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class MainActivity extends Activity {
     private MaterialButton turn_on_off_button;
     private Slider flash_strength_slider;
     private TextView flash_strength_state;
     private MaterialToolbar action_bar;
+    private SwitchCompat on_off_controller;
     private FlashlightController fc;
     private Link link;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +44,20 @@ public class MainActivity extends Activity {
 
         fc = new FlashlightController(this);
         link = new Link(this);
+        prefs = getSharedPreferences("settings", MODE_PRIVATE);
 
         // Elements - Flashlight
         turn_on_off_button = findViewById(R.id.turn_on_off_button);
         flash_strength_slider = findViewById(R.id.flash_strength_slider);
         flash_strength_state = findViewById(R.id.flash_strength_state);
         action_bar = findViewById(R.id.action_bar);
+        on_off_controller = findViewById(R.id.on_off_controller);
 
         // Change state to current value
         String strengthState = SystemProperties.get("persist.sys.phh.flash_strength");
         flash_strength_slider.setValue(Float.parseFloat(strengthState));
         flash_strength_state.setText(String.format(getString(R.string.flash_strength_count), strengthState));
+        on_off_controller.setChecked(prefs.getBoolean("change_on_every_slider_change", false));
 
         action_bar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.open_github) {
@@ -69,12 +80,20 @@ public class MainActivity extends Activity {
             }
         });
 
+        on_off_controller.setOnCheckedChangeListener((compoundButton, b) -> {
+            try {
+                prefs.edit().putBoolean("change_on_every_slider_change", b).apply();
+            } catch (Exception f) {
+                toast(f.toString());
+            }
+        });
+
         flash_strength_slider.addOnChangeListener((slider, value, fromUser) -> {
             String currentValue = String.valueOf(value);
             try {
                 SystemProperties.set("persist.sys.phh.flash_strength", currentValue);
                 flash_strength_state.setText(String.format(getString(R.string.flash_strength_count), currentValue));
-                if (fc.isEnabled()) {
+                if (fc.isEnabled() && !prefs.getBoolean("change_on_every_slider_change", false)) {
                     fc.setFlashlight(false);
                     fc.setFlashlight(true);
                 }
