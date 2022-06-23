@@ -59,6 +59,9 @@ public class MainActivity extends Activity {
         flash_strength_state.setText(String.format(getString(R.string.flash_strength_count), strengthState));
         on_off_controller.setChecked(prefs.getBoolean("change_on_every_slider_change", false));
 
+        // Set version
+        action_bar.setSubtitle(BuildConfig.VERSION_NAME + " " + "(" + BuildConfig.VERSION_CODE + ")");
+
         action_bar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.open_github) {
                 link.open("https://github.com/DerGoogler/a70_flashlight_strength_controller");
