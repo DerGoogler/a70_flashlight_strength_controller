@@ -1,15 +1,21 @@
 package com.dergoogler.phh.flashlight.controllers;
 
+import static com.dergoogler.phh.flashlight.util.SuperUser.BINARY_PHH_GSI;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.dergoogler.phh.flashlight.util.SuperUser;
+import com.dergoogler.phh.flashlight.util.SystemProperties;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -76,6 +82,35 @@ public class FlashlightController {
         dispatchModeChanged(mFlashlightEnabled);
         if (pendingError) {
             dispatchError();
+        }
+    }
+
+    /**
+     * Supports Phh and Android 13. If Phh Android 12 it'll use it's props, if Phh Android 13 it use A13 it self features.
+     *
+     * @return Value of the flashlight strength
+     */
+    public String getTorchStrengthLevel() {
+        try {
+            if (Build.VERSION.SDK_INT >= 33) {
+                mCameraManager.getTorchStrengthLevel(mCameraId);
+            } else if (SuperUser.checkBinary(BINARY_PHH_GSI)) {
+                return SystemProperties.get("persist.sys.phh.flash_strength");
+            } else {
+                return "0";
+            }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+        return "0";
+    }
+
+    /**
+     * Supports Phh and Android 13. If Phh Android 12 it'll use it's props, if Phh Android 13 it use A13 it self features.
+     */
+    public void setTorchStrengthLevel(String value) {
+        if (SuperUser.checkBinary(BINARY_PHH_GSI)) {
+            SystemProperties.set("persist.sys.phh.flash_strength", value);
         }
     }
 

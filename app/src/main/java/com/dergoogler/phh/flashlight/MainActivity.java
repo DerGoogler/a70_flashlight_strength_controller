@@ -5,6 +5,7 @@ import static com.dergoogler.phh.flashlight.util.SuperUser.BINARY_SU;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -54,7 +55,7 @@ public class MainActivity extends Activity {
         on_off_controller = findViewById(R.id.on_off_controller);
 
         // Change state to current value
-        String strengthState = SystemProperties.get("persist.sys.phh.flash_strength");
+        String strengthState = fc.getTorchStrengthLevel();
         flash_strength_slider.setValue(Float.parseFloat(strengthState));
         flash_strength_state.setText(String.format(getString(R.string.flash_strength_count), strengthState));
         on_off_controller.setChecked(prefs.getBoolean("change_on_every_slider_change", false));
@@ -94,7 +95,7 @@ public class MainActivity extends Activity {
         flash_strength_slider.addOnChangeListener((slider, value, fromUser) -> {
             String currentValue = String.valueOf(value);
             try {
-                SystemProperties.set("persist.sys.phh.flash_strength", currentValue);
+                fc.setTorchStrengthLevel(currentValue);
                 flash_strength_state.setText(String.format(getString(R.string.flash_strength_count), currentValue));
                 if (fc.isEnabled() && !prefs.getBoolean("change_on_every_slider_change", false)) {
                     fc.setFlashlight(false);
@@ -122,12 +123,12 @@ public class MainActivity extends Activity {
 
     private void checkSystem() {
         // Checking if system is an phh gsi system
-        if (!SuperUser.checkBinary(BINARY_PHH_GSI)) {
+        if (!SuperUser.checkBinary(BINARY_PHH_GSI) || !(Build.VERSION.SDK_INT >= 33)) {
             MaterialAlertDialogBuilder builder =
                     new MaterialAlertDialogBuilder(this);
             builder
                     .setTitle("Unable")
-                    .setMessage("Your system isn't an Phh GSI System :(")
+                    .setMessage("Your system isn't an Phh GSI System, or above Android 13.")
                     .setCancelable(false)
                     .setPositiveButton(R.string.quit, (x, y) -> finish());
             builder.show();
