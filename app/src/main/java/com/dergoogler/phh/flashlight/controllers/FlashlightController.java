@@ -109,8 +109,14 @@ public class FlashlightController {
      * Supports Phh and Android 13. If Phh Android 12 it'll use it's props, if Phh Android 13 it use A13 it self features.
      */
     public void setTorchStrengthLevel(String value) {
-        if (SuperUser.checkBinary(BINARY_PHH_GSI)) {
-            SystemProperties.set("persist.sys.phh.flash_strength", value);
+        try {
+            if (Build.VERSION.SDK_INT >= 33) {
+                mCameraManager.turnOnTorchWithStrengthLevel(mCameraId, Integer.parseInt(value));
+            } else if (SuperUser.checkBinary(BINARY_PHH_GSI)) {
+                SystemProperties.set("persist.sys.phh.flash_strength", value);
+            }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
         }
     }
 

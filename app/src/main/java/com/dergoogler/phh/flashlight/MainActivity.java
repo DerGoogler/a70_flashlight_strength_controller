@@ -122,8 +122,8 @@ public class MainActivity extends Activity {
     }
 
     private void checkSystem() {
-        // Checking if system is an phh gsi system
-        if (!SuperUser.checkBinary(BINARY_PHH_GSI) || !(Build.VERSION.SDK_INT >= 33)) {
+        // Checking if system is an phh gsi system and it above Android 13
+        if (!SuperUser.checkBinary(BINARY_PHH_GSI) && !(Build.VERSION.SDK_INT >= 33)) {
             MaterialAlertDialogBuilder builder =
                     new MaterialAlertDialogBuilder(this);
             builder
