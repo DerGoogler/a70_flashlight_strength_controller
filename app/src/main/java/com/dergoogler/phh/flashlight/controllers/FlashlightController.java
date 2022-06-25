@@ -97,12 +97,12 @@ public class FlashlightController {
             } else if (SuperUser.checkBinary(BINARY_PHH_GSI)) {
                 return SystemProperties.get("persist.sys.phh.flash_strength");
             } else {
-                return "0";
+                return "1";
             }
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-        return "0";
+        return "1";
     }
 
     /**

@@ -45,8 +45,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
-                android:text="@string/flash_strength_count"
-                android:textSize="16sp" />
+                android:text="@string/flash_strength_count" />
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/flash_strength_slider"
@@ -70,7 +69,6 @@
                     android:layout_marginEnd="5dp"
                     android:layout_weight="1"
                     android:text="Turn light manually off"
-                    android:textSize="16sp"
                     tools:ignore="HardcodedText" />
 
                 <androidx.appcompat.widget.SwitchCompat
